@@ -1,0 +1,5 @@
+spider_info/
+*.pyc
+*.log
+*.html
+.idea/
