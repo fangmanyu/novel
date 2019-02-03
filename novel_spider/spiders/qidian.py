@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
-import json
+
+import datetime
+import re
 
 import scrapy
 from scrapy.linkextractors import LinkExtractor
@@ -9,10 +11,8 @@ from scrapy.spiders import CrawlSpider, Rule
 from w3lib.html import remove_tags
 
 from items import QiDianBookItem
-import datetime
-import re
-from util.qidian_utils import get_score
 from util.common_utils import font_convert
+from util.qidian_utils import get_score
 
 
 class QidianSpider(CrawlSpider):
@@ -22,8 +22,8 @@ class QidianSpider(CrawlSpider):
 
     rules = (
         Rule(LinkExtractor(allow=r'info/\d+', allow_domains='book.qidian.com'), callback='parse_item', follow=True),
-        # Rule(LinkExtractor(allow=r'all|rank|finish|free|xuanhuan|qihuan|xianxia|youxi|kehuan/', deny=r'mm/'),
-        #      follow=True),
+        Rule(LinkExtractor(allow=r'all|rank|finish|free|xuanhuan|qihuan|xianxia|youxi|kehuan/', deny=r'mm/'),
+             follow=True),
     )
     comp = re.compile(r'.*?/info/(\d+)', re.DOTALL)
     score_and_comment_api = "https://book.qidian.com/ajax/comment/index"

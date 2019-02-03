@@ -4,3 +4,4 @@ spider_info/
 *.html
 .idea/
 docker/mysql/
+novel_spider/settings.py
