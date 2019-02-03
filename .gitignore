@@ -3,3 +3,4 @@ spider_info/
 *.log
 *.html
 .idea/
+docker/mysql/

@@ -67,7 +67,7 @@ ROBOTSTXT_OBEY = False
 # Configure item pipelines
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-   'novel_spider.pipelines.NovalSpiderPipeline': 300,
+   'novel_spider.pipelines.MysqlTwistedPipeline': 300,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
@@ -97,3 +97,10 @@ _current_file_path = os.path.abspath(__file__)
 PROJECT_PATH = os.path.dirname(_current_file_path)
 # 根目录
 ROOT_PATH = os.path.dirname(PROJECT_PATH)
+
+# MySQL数据库配置
+MYSQL_HOST = '192.168.1.6'
+MYSQL_USER = 'fmy'
+MYSQL_PASSWORD = 'fmy999111.'
+MYSQL_DB_NAME = 'spider'
+MYSQL_PORT = 3306

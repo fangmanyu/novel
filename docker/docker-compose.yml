@@ -2,15 +2,22 @@ version: '3'
 services:
   novel_spider:
     build: .
+    container_name: 'novel_spider'
     volumes:
       - ..:/usr/src/app
   redis:
     image: 'redis:alpine'
     ports:
-      - '6379:6379'
-#  db:
-#    image: mysql
-#      command: --default-authentication-plugin=mysql_native_password
-#      restart: always
-#      environment:
-#        MYSQL_ROOT_PASSWORD: root
+      - '6380:6379'
+  db:
+    image: 'mysql'
+    container_name: 'mysql-db'
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    ports:
+      - '3307:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - ./mysql/data:/var/lib/mysql
+      - ./mysql/conf:/etc/mysql/conf.d

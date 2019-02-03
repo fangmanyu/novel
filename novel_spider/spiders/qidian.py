@@ -12,6 +12,7 @@ from items import QiDianBookItem
 import datetime
 import re
 from util.qidian_utils import get_score
+from util.common_utils import font_convert
 
 
 class QidianSpider(CrawlSpider):
@@ -30,9 +31,19 @@ class QidianSpider(CrawlSpider):
     def process_results(self, response, results):
         if isinstance(results, scrapy.Item):
             # 获取评分
-            cookie = str(response.headers.getlist('Set-Cookie')[0])
-            csrf = re.match(r'.*?_csrfToken=(.*?);', cookie).group(1)
+            if 'Set-Cookie' in response.headers:
+                cookie = str(response.headers.getlist('Set-Cookie')[0])
+                csrf = re.match(r'.*?_csrfToken=(.*?);', cookie).group(1)
+            else:
+                csrf = 'nsH2kveMyA1Gn7metQcu8oNcIdGTPaMma1TrNyzi'
             results['score'] = get_score(results['book_id'], csrf)
+
+            # 获取数据统计
+            statistics_list = re.findall(r'<em><style>(@font-face {.*?}.*?</span></em>.*?</cite>)',
+                                         response.text, re.DOTALL)
+            results['word_count'] = font_convert(statistics_list[0])
+            results['click_total'] = font_convert(statistics_list[1])
+            results['recommend_total'] = font_convert(statistics_list[3])
 
             yield results
 
@@ -52,9 +63,6 @@ class QidianSpider(CrawlSpider):
         book_loader.add_css('description', '.book-intro p')
         book_loader.add_value('url', response.url)
         book_loader.add_value('is_finish', '完本' in tag_list)
-        book_loader.add_xpath('word_count', '//div[@class="book-info "]/p//em[1]')
-        book_loader.add_xpath('click_total', '//div[@class="book-info "]/p//em[2]')
-        book_loader.add_xpath('recommend_total', '//div[@class="book-info "]/p//em[4]')
         book_loader.add_css('last_chapter', '.update .detail .cf a::text')
         book_loader.add_css('last_chapter_update_time', '.update .detail .cf .time::text')
         book_loader.add_value('crawl_time', datetime.datetime.now())
