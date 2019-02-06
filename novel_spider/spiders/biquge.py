@@ -1,21 +1,42 @@
 # -*- coding: utf-8 -*-
-import scrapy
+import datetime
+
 from scrapy.linkextractors import LinkExtractor
+from scrapy.loader import ItemLoader
+from scrapy.loader.processors import TakeFirst
 from scrapy.spiders import CrawlSpider, Rule
+
+from items import Chapter
+from util.common_utils import get_md5
 
 
 class BiqugeSpider(CrawlSpider):
     name = 'biquge'
-    allowed_domains = ['www.qu.la']
-    start_urls = ['https://www.qu.la/']
-
+    allowed_domains = ['www.biquge5200.cc']
+    start_urls = ['https://www.biquge5200.cc/']
     rules = (
-        Rule(LinkExtractor(allow=r'book/\d+?/\d+.html'), callback='parse_item', follow=True),
+        Rule(LinkExtractor(allow=r'\d+?_\d+?/\d+.html', allow_domains='www.biquge5200.cc'),
+             callback='parse_item', follow=True),
+        Rule(LinkExtractor(allow=r'\w+?xiaoshuo/'), follow=True),
+        Rule(LinkExtractor(allow=r'\d+?_\d+?/', allow_domains='www.biquge5200.cc'), follow=True),
     )
 
+    def process_results(self, response, results):
+        if not isinstance(results, Chapter):
+            return results
+
+        results['chapter_id'] = get_md5(results['book_name'] + results['title'])
+        yield results
+
     def parse_item(self, response):
-        i = {}
-        #i['domain_id'] = response.xpath('//input[@id="sid"]/@value').extract()
-        #i['name'] = response.xpath('//div[@id="name"]').extract()
-        #i['description'] = response.xpath('//div[@id="description"]').extract()
-        return i
+        loader = ItemLoader(item=Chapter(), response=response)
+        loader.default_output_processor = TakeFirst()
+
+        loader.add_css('content', '#content')
+        loader.add_css('title', '.bookname h1::text')
+        loader.add_xpath('book_name', '//div[@class="con_top"]/a[3]/text()')
+        loader.add_value('url', response.url)
+        loader.add_value('chapter_id', response.url)
+        loader.add_value('crawl_time', datetime.datetime.now())
+
+        return loader.load_item()

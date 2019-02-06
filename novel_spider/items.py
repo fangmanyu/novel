@@ -9,6 +9,8 @@ import scrapy
 from scrapy.loader.processors import MapCompose
 from w3lib.html import remove_tags
 
+from util.common_utils import chapter_content_process
+
 
 class NovelSpiderItem(scrapy.Item):
     # define the fields for your item here like:
@@ -52,4 +54,23 @@ class QiDianBookItem(scrapy.Item):
                   self['description'], self['score'], self['word_count'], self['click_total'], self['recommend_total'],
                   self['crawl_time'])
 
+        return insert_sql, params
+
+
+class Chapter(scrapy.Item):
+    title = scrapy.Field()
+    chapter_id = scrapy.Field()
+    url = scrapy.Field()
+    content = scrapy.Field(
+        input_processor=MapCompose(lambda x: chapter_content_process(x, {'</p>': '\r\n'}),
+                                   remove_tags)
+    )
+    book_name = scrapy.Field()
+    crawl_time = scrapy.Field()
+
+    def get_insert_sql(self):
+        insert_sql = 'insert into novel_chapter(chapter_id, title, content, url, book_name, crawl_time) ' \
+                     'VALUES(%s, %s, %s, %s, %s, %s);'
+        params = (self["chapter_id"], self["title"], self["content"], self["url"], self["book_name"],
+                  self["crawl_time"])
         return insert_sql, params

@@ -1,17 +1,18 @@
 # -*- coding: utf-8 -*-
 
+import logging
+
 # Define your item pipelines here
 #
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
 # See: https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 from MySQLdb.cursors import DictCursor
 from twisted.enterprise import adbapi
-import logging
 
 logger = logging.getLogger(__name__)
 
 
-class NovalSpiderPipeline(object):
+class NovelSpiderPipeline(object):
     def process_item(self, item, spider):
         return item
 

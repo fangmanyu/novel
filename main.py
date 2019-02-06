@@ -5,5 +5,5 @@ import sys
 sys.path.extend(ROOT_PATH)
 
 if __name__ == '__main__':
-    execute(["scrapy", "crawl", "qidian"])
+    execute(["scrapy", "crawl", "biquge"])
 # "-s", "JOBDIR=spider_info/qidian"
