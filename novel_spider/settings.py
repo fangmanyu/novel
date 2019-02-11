@@ -68,7 +68,7 @@ ROBOTSTXT_OBEY = False
 ITEM_PIPELINES = {
     # 'novel_spider.pipelines.MysqlTwistedPipeline': 300,
     'novel_spider.pipelines.NovelSpiderPipeline': 10,
-    # 'scrapy_redis.pipelines.RedisPipeline': 299,
+    'scrapy_redis.pipelines.RedisPipeline': 299,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
@@ -171,3 +171,8 @@ REDIS_PORT = 6379
 
 # search设置
 SEARCH_BOOK_KEY = 'book_url_mapping'
+
+# boolmfilter设置
+# one blockNum for about 90,000,000; if you have more strings for filtering, increase it.
+BLOCK_NUM = 1
+BOOLMFILTER_KEY = 'bloomfilter'

@@ -6,6 +6,7 @@ from scrapy.loader.processors import TakeFirst
 
 from items import Chapter
 from scrapy_redis.spiders import RedisSpider
+from scrapy_redis.utils import bytes_to_str
 
 
 class BiqugeSingleNovelSpider(RedisSpider):
@@ -18,8 +19,9 @@ class BiqugeSingleNovelSpider(RedisSpider):
 
     custom_settings = {
         'ITEM_PIPELINES': {
-            'novel_spider.pipelines.NovelSpiderPipeline': 10,
+            # 'novel_spider.pipelines.NovelSpiderPipeline': 10,
             'novel_spider.pipelines.BiqugeSinglePipeline': 1,
+            'scrapy_redis.pipelines.RedisPipeline': 299,
         }
     }
 
@@ -27,7 +29,7 @@ class BiqugeSingleNovelSpider(RedisSpider):
         number = 1
         for node in response.xpath(r'//div[@id="list"]/dl/dt[2]/following::dd'):
             chapter_url = node.css('a::attr(href)').extract_first()
-            yield scrapy.Request(chapter_url, dont_filter=True, meta=dict(number=number), callback=self.parse_item)
+            yield scrapy.Request(chapter_url, meta=dict(number=number), callback=self.parse_item)
             number += 1
         pass
 
