@@ -9,6 +9,8 @@ import logging
 from MySQLdb.cursors import DictCursor
 from twisted.enterprise import adbapi
 
+from util.common_utils import get_md5
+
 logger = logging.getLogger(__name__)
 
 
@@ -84,3 +86,9 @@ class MysqlTwistedPipeline(object):
         logger.error(insert_sql)
         logger.error(params)
         logger.error(failure)
+
+
+class BiqugeSinglePipeline(object):
+    def process_item(self, item, spider):
+        item['chapter_id'] = get_md5(item['book_name'] + item['title'])
+        return item

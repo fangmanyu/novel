@@ -4,21 +4,22 @@ import datetime
 from scrapy.linkextractors import LinkExtractor
 from scrapy.loader import ItemLoader
 from scrapy.loader.processors import TakeFirst
-from scrapy.spiders import CrawlSpider, Rule
+from scrapy.spiders import Rule
 
 from items import Chapter
+from scrapy_redis.spiders import RedisCrawlSpider
 from util.common_utils import get_md5
 
 
-class BiqugeSpider(CrawlSpider):
-    name = 'biquge'
+class BiqugeCrawlSpider(RedisCrawlSpider):
+    name = 'biquge:crawl'
     allowed_domains = ['www.biquge5200.cc']
     start_urls = ['https://www.biquge5200.cc/']
     rules = (
+        Rule(LinkExtractor(allow=r'\d+?_\d+?/', allow_domains='www.biquge5200.cc'), follow=True),
         Rule(LinkExtractor(allow=r'\d+?_\d+?/\d+.html', allow_domains='www.biquge5200.cc'),
              callback='parse_item', follow=True),
         Rule(LinkExtractor(allow=r'\w+?xiaoshuo/'), follow=True),
-        Rule(LinkExtractor(allow=r'\d+?_\d+?/', allow_domains='www.biquge5200.cc'), follow=True),
     )
 
     def process_results(self, response, results):

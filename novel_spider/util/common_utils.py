@@ -14,6 +14,8 @@ def font_convert(font_html):
     woff_name = comp.match(font_html).group(3)
     content = re.match(r'.*(<span class=".*?">(.*?)</span></em>)', font_html).group(2)
 
+    # TODO 添加字体缓存
+
     # 将woff文件和font mapping xml保存到本地
     path = os.path.join(os.path.join(ROOT_PATH, 'font'), woff_name)
     exists = os.path.exists(path)

@@ -67,10 +67,11 @@ class Chapter(scrapy.Item):
     )
     book_name = scrapy.Field()
     crawl_time = scrapy.Field()
+    number = scrapy.Field()
 
     def get_insert_sql(self):
-        insert_sql = 'insert into novel_chapter(chapter_id, title, content, url, book_name, crawl_time) ' \
-                     'VALUES(%s, %s, %s, %s, %s, %s);'
+        insert_sql = 'insert into novel_chapter(chapter_id, title, content, url, book_name, crawl_time, number) ' \
+                     'VALUES(%s, %s, %s, %s, %s, %s, %s);'
         params = (self["chapter_id"], self["title"], self["content"], self["url"], self["book_name"],
-                  self["crawl_time"])
+                  self["crawl_time"], self['number'])
         return insert_sql, params
