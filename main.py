@@ -14,7 +14,7 @@ redis = get_redis()
 
 def lpush():
     name, url = search_url('怪物乐园')
-    redis.lpush('biquge:start_urls', url)
+    redis.lpush('biquge_single:start_urls', url)
     global timer
     timer = threading.Timer(300, lpush)
     timer.start()

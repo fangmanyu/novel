@@ -62,7 +62,7 @@ class Chapter(scrapy.Item):
     chapter_id = scrapy.Field()
     url = scrapy.Field()
     content = scrapy.Field(
-        input_processor=MapCompose(lambda x: chapter_content_process(x, {'</p>': '\r\n'}),
+        input_processor=MapCompose(lambda x: chapter_content_process(x, {'</p>': '\n\n'}),
                                    remove_tags)
     )
     book_name = scrapy.Field()

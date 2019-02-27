@@ -6,7 +6,6 @@ from scrapy.loader.processors import TakeFirst
 
 from items import Chapter
 from scrapy_redis.spiders import RedisSpider
-from scrapy_redis.utils import bytes_to_str
 
 
 class BiqugeSingleNovelSpider(RedisSpider):
